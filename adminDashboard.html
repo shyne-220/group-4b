@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ROYAL BEAUTY TOUCH SALON</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <i class="fas fa-crown"></i> Royal Touch Admin
+        </div>
+        <nav>
+            <a href="#" class="nav-link active" onclick="showPage('dashboard'); return false;"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="#" class="nav-link" onclick="showPage('analytics'); return false;"><i class="fas fa-chart-pie"></i> Analytics</a>
+            <a href="#" class="nav-link" onclick="showPage('services'); return false;"><i class="fas fa-spa"></i> Services</a>
+            <a href="#" class="nav-link" onclick="showPage('bookings'); return false;"><i class="fas fa-calendar-check"></i> Bookings</a>
+            <a href="#" class="nav-link" onclick="showPage('inventory'); return false;"><i class="fas fa-boxes"></i> Inventory</a>
+        </nav>
+        <div class="user-section">
+            <div class="avatar" id="avatar">A</div>
+            <button class="logout-btn" onclick="handleLogout()">Logout</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+
+        <!-- DASHBOARD PAGE -->
+        <section id="dashboard" class="page-section active">
+            <h2><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="total-bookings">0</h3>
+                    <p>Total Bookings</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="pending-bookings">0</h3>
+                    <p>Pending Approvals</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="approved-bookings">0</h3>
+                    <p>Approved Bookings</p>
+                </div>
+                <div class="stat-card">
+                    <h3>GH₵<span id="total-revenue">0.00</span></h3>
+                    <p>Potential Revenue</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="total-services">0</h3>
+                    <p>Active Services</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="total-hair-styles">0</h3>
+                    <p>Hair Styles</p>
+                </div>
+            </div>
+        </section>
+
+<!-- ANALYTICS PAGE -->
+        <section id="analytics" class="page-section">
+            <h2><i class="fas fa-chart-pie"></i> Analytics Dashboard</h2>
+            
+            <!-- Revenue Chart -->
+            <div style="margin-bottom: 3rem;">
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;"><i class="fas fa-chart-bar"></i> Revenue Overview</h3>
+                <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: var(--shadow);">
+                    <canvas id="revenueChart" height="100"></canvas>
+                </div>
+            </div>
+
+            <!-- Bookings Chart -->
+            <div style="margin-bottom: 3rem;">
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;"><i class="fas fa-calendar-check"></i> Bookings Overview</h3>
+                <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: var(--shadow);">
+                    <canvas id="bookingsChart" height="100"></canvas>
+                </div>
+            </div>
+            
+            <!-- Revenue Analytics -->
+            <div style="margin-bottom: 3rem;">
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;"><i class="fas fa-money-wave"></i> Revenue Analytics</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="analytics-total-revenue">GH₵0.00</h3>
+                        <p>Total Revenue</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="analytics-pending-revenue">GH₵0.00</h3>
+                        <p>Pending Revenue</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="analytics-approved-revenue">GH₵0.00</h3>
+                        <p>Approved Revenue</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="analytics-avg-booking">GH₵0.00</h3>
+                        <p>Avg. Booking Value</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Analytics -->
+            <div style="margin-bottom: 3rem;">
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;"><i class="fas fa-boxes"></i> Inventory Analytics</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="analytics-total-items">0</h3>
+                        <p>Total Products</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="analytics-total-stock">0</h3>
+                        <p>Total Stock Units</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="analytics-low-stock">0</h3>
+                        <p>Low Stock Items</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="analytics-inventory-value">GH₵0.00</h3>
+                        <p>Total Inventory Value</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Analytics -->
+            <div>
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;"><i class="fas fa-spa"></i> Service Analytics</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="analytics-total-services">0</h3>
+                        <p>Available Services</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="analytics-hair-styles">0</h3>
+                        <p>Hair Styles</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="analytics-top-service">-</h3>
+                        <p>Most Booked Service</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="analytics-home-service">0%</h3>
+                        <p>Home Service Rate</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICES PAGE -->
+        <section id="services" class="page-section">
+            <h2><i class="fas fa-spa"></i> Services Management</h2>
+            <div id="services-alert" class="alert"></div>
+            
+            <div class="form-section">
+                <h3><i class="fas fa-plus"></i> Add New Service</h3>
+                <form onsubmit="handleAddService(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="service-name">Service Name</label>
+                            <input type="text" id="service-name" placeholder="E.g., Manicure" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-description">Description</label>
+                            <input type="text" id="service-description" placeholder="Service description" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-price">Price (GH₵)</label>
+                            <input type="number" id="service-price" placeholder="Price" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-duration">Duration (minutes)</label>
+                            <input type="number" id="service-duration" placeholder="Duration" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-category">Category</label>
+                            <input type="text" id="service-category" placeholder="E.g., nails, hair, massage" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-icon">Icon Class</label>
+                            <input type="text" id="service-icon" placeholder="E.g., fa-hand-sparkles" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-info" style="width: 100%;"><i class="fas fa-plus"></i> Add Service</button>
+                </form>
+            </div>
+
+            <div class="table-container">
+                <table id="services-table">
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Duration</th>
+                            <th>Category</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="services-body">
+                        <tr><td colspan="6" style="text-align: center; color: var(--text-light);">Loading services...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- HAIR STYLES PAGE -->
+        <section id="hair-styles" class="page-section">
+            <h2><i class="fas fa-scissors"></i> Hair Styles Gallery</h2>
+            <div id="hair-alert" class="alert"></div>
+            
+            <div class="form-section">
+                <h3><i class="fas fa-plus"></i> Add New Hair Style</h3>
+                <form onsubmit="handleAddHairStyle(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="hair-name">Style Name</label>
+                            <input type="text" id="hair-name" placeholder="E.g., Classic Bob" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hair-length">Hair Length</label>
+                            <select id="hair-length" required>
+                                <option value="">Select Length</option>
+                                <option value="Short">Short</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Long">Long</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="hair-categories">Categories (comma separated)</label>
+                            <input type="text" id="hair-categories" placeholder="E.g., short,straight" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hair-features">Features (comma separated)</label>
+                            <input type="text" id="hair-features" placeholder="E.g., Professional,Timeless" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hair-description">Description</label>
+                            <input type="text" id="hair-description" placeholder="Detailed description" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hair-price">Price (GH₵)</label>
+                            <input type="number" id="hair-price" placeholder="Price" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hair-icon">Icon/Emoji</label>
+                            <input type="text" id="hair-icon" placeholder="E.g., ✂️ or 👑" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hair-difficulty">Difficulty</label>
+                            <select id="hair-difficulty" required>
+                                <option value="">Select Difficulty</option>
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="hair-maintenance">Maintenance</label>
+                            <select id="hair-maintenance" required>
+                                <option value="">Select Maintenance</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-info" style="width: 100%;"><i class="fas fa-plus"></i> Add Hair Style</button>
+                </form>
+            </div>
+
+            <div class="table-container">
+                <table id="hair-table">
+                    <thead>
+                        <tr>
+                            <th>Style Name</th>
+                            <th>Length</th>
+                            <th>Categories</th>
+                            <th>Price</th>
+                            <th>Difficulty</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hair-body">
+                        <tr><td colspan="6" style="text-align: center; color: var(--text-light);">Loading hair styles...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- BOOKINGS PAGE -->
+        <section id="bookings" class="page-section">
+            <h2><i class="fas fa-calendar-check"></i> Service Bookings Management</h2>
+            <div id="bookings-alert" class="alert"></div>
+            
+            <div class="filter-section">
+                <h3 style="margin-bottom: 1rem;">Filter Bookings</h3>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="filter-btn active" onclick="filterBookings('all')">All Bookings</button>
+                    <button class="filter-btn" onclick="filterBookings('Pending')">Pending</button>
+                    <button class="filter-btn" onclick="filterBookings('Approved')">Approved</button>
+                    <button class="filter-btn" onclick="filterBookings('Declined')">Declined</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="bookings-table">
+                    <thead>
+                        <tr>
+                            <th>Client Name</th>
+                            <th>Phone</th>
+                            <th>Services</th>
+                            <th>Date & Time</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookings-body">
+                        <tr><td colspan="9" style="text-align: center; color: var(--text-light);">No bookings yet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- INVENTORY PAGE -->
+        <section id="inventory" class="page-section">
+            <h2><i class="fas fa-boxes"></i> Inventory Management</h2>
+            <div id="inventory-alert" class="alert"></div>
+            
+            <div class="form-section">
+                <h3><i class="fas fa-plus"></i> Add New Inventory Item</h3>
+                <form onsubmit="handleAddInventory(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="inv-name">Product Name</label>
+                            <input type="text" id="inv-name" placeholder="E.g., Hair Dye - Black" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inv-quantity">Quantity</label>
+                            <input type="number" id="inv-quantity" placeholder="Quantity" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inv-category">Category</label>
+                            <input type="text" id="inv-category" placeholder="E.g., Hair Products" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inv-cost">Cost per Unit (GH₵)</label>
+                            <input type="number" id="inv-cost" placeholder="Cost" step="0.01" min="0" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-info" style="width: 100%;"><i class="fas fa-plus"></i> Add Item to Inventory</button>
+                </form>
+            </div>
+
+            <div class="table-container">
+                <table id="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Quantity</th>
+                            <th>Cost per Unit</th>
+                            <th>Total Value (GH₵)</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-body">
+                        <tr><td colspan="7" style="text-align: center; color: var(--text-light);">No items in inventory yet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- BOOKING DETAILS MODAL -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Booking Details</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modal-content"></div>
+            <div class="modal-actions">
+                <button onclick="approveBooking()" class="btn btn-success" style="flex: 1;"><i class="fas fa-check"></i> Approve Booking</button>
+                <button onclick="declineBooking()" class="btn btn-danger" style="flex: 1;"><i class="fas fa-times"></i> Decline Booking</button>
+                <button onclick="closeModal()" class="btn btn-secondary" style="flex: 1;"><i class="fas fa-times"></i> Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 ROYAL BEAUTY TOUCH SALON. All rights reserved.</p>
+        <p>Admin Dashboard Version 2.0</p>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="data.js"></script>
+    <script>
+    // ===== INITIALIZATION =====
+        // Helper function to format date in local timezone
+        function formatLocalDate(dateString) {
+            if (!dateString) return 'N/A';
+            const parts = dateString.split('-');
+            const localDate = new Date(parts[0], parts[1] - 1, parts[2]);
+            return localDate.toLocaleDateString();
+        }
+
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        let currentBooking = null;
+        let currentFilter = 'all';
+
+        // Check if user is admin
+        if (!currentUser || currentUser.userType !== 'admin') {
+            window.location.href = 'login.html';
+        }
+
+        // Load page on window load
+        window.addEventListener('load', () => {
+            initializePage();
+        });
+
+// ===== INITIALIZE PAGE =====
+        function initializePage() {
+            document.getElementById('avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            loadDashboard();
+            loadServices();
+            loadHairStyles();
+            loadBookings();
+            loadInventory();
+            initCharts();
+        }
+
+        // ===== CHARTS =====
+        let revenueChart, bookingsChart;
+        
+        function initCharts() {
+            // Get bookings from localStorage or use dummy data
+            let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            
+            // If no real data, use dummy data for presentation
+            if (bookings.length === 0) {
+                bookings = [
+                    { id: 1, totalPrice: 150, status: 'Approved' },
+                    { id: 2, totalPrice: 200, status: 'Approved' },
+                    { id: 3, totalPrice: 85, status: 'Pending' },
+                    { id: 4, totalPrice: 320, status: 'Approved' },
+                    { id: 5, totalPrice: 95, status: 'Declined' },
+                    { id: 6, totalPrice: 175, status: 'Approved' },
+                    { id: 7, totalPrice: 250, status: 'Pending' },
+                    { id: 8, totalPrice: 180, status: 'Approved' }
+                ];
+            }
+            
+            // Calculate revenue data
+            const totalRevenue = bookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
+            const pendingRevenue = bookings.filter(b => b.status === 'Pending').reduce((sum, b) => sum + (b.totalPrice || 0), 0);
+            const approvedRevenue = bookings.filter(b => b.status === 'Approved').reduce((sum, b) => sum + (b.totalPrice || 0), 0);
+            const declinedRevenue = bookings.filter(b => b.status === 'Declined').reduce((sum, b) => sum + (b.totalPrice || 0), 0);
+            
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            revenueChart = new Chart(revenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Total Revenue', 'Pending Revenue', 'Approved Revenue', 'Declined Revenue'],
+                    datasets: [{
+                        label: 'Revenue (GH₵)',
+                        data: [totalRevenue, pendingRevenue, approvedRevenue, declinedRevenue],
+                        backgroundColor: [
+                            'rgba(90, 74, 125, 0.8)',
+                            'rgba(243, 156, 18, 0.8)',
+                            'rgba(39, 174, 96, 0.8)',
+                            'rgba(231, 76, 60, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(90, 74, 125, 1)',
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(231, 76, 60, 1)'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'GH₵' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Bookings Chart
+            const bookingsCount = bookings.length;
+            const pendingCount = bookings.filter(b => b.status === 'Pending').length;
+            const approvedCount = bookings.filter(b => b.status === 'Approved').length;
+            const declinedCount = bookings.filter(b => b.status === 'Declined').length;
+            
+            const bookingsCtx = document.getElementById('bookingsChart').getContext('2d');
+            bookingsChart = new Chart(bookingsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Total', 'Pending', 'Approved', 'Declined'],
+                    datasets: [{
+                        data: [bookingsCount, pendingCount, approvedCount, declinedCount],
+                        backgroundColor: [
+                            'rgba(90, 74, 125, 0.8)',
+                            'rgba(243, 156, 18, 0.8)',
+                            'rgba(39, 174, 96, 0.8)',
+                            'rgba(231, 76, 60, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(90, 74, 125, 1)',
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(231, 76, 60, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            
+            // Update analytics stats
+            document.getElementById('analytics-total-revenue').textContent = 'GH₵' + totalRevenue.toFixed(2);
+            document.getElementById('analytics-pending-revenue').textContent = 'GH₵' + pendingRevenue.toFixed(2);
+            document.getElementById('analytics-approved-revenue').textContent = 'GH₵' + approvedRevenue.toFixed(2);
+            document.getElementById('analytics-avg-booking').textContent = 'GH₵' + (totalRevenue / bookingsCount).toFixed(2);
+            document.getElementById('analytics-total-items').textContent = '12';
+            document.getElementById('analytics-total-stock').textContent = '156';
+            document.getElementById('analytics-low-stock').textContent = '3';
+            document.getElementById('analytics-inventory-value').textContent = 'GH₵2,450.00';
+            document.getElementById('analytics-total-services').textContent = servicesDatabase.length.toString();
+            document.getElementById('analytics-hair-styles').textContent = hairGalleryDatabase.length.toString();
+            document.getElementById('analytics-top-service').textContent = 'Manicure';
+            document.getElementById('analytics-home-service').textContent = '35%';
+        }
+
+        // ===== PAGE NAVIGATION =====
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.closest('.nav-link').classList.add('active');
+        }
+
+        // ===== LOAD DASHBOARD =====
+        function loadDashboard() {
+            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            const pending = bookings.filter(b => b.status === 'Pending').length;
+            const approved = bookings.filter(b => b.status === 'Approved').length;
+            const totalRevenue = bookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
+
+            document.getElementById('total-bookings').textContent = bookings.length;
+            document.getElementById('pending-bookings').textContent = pending;
+            document.getElementById('approved-bookings').textContent = approved;
+            document.getElementById('total-revenue').textContent = totalRevenue.toFixed(2);
+            document.getElementById('total-services').textContent = servicesDatabase.length;
+            document.getElementById('total-hair-styles').textContent = hairGalleryDatabase.length;
+        }
+
+        // ===== LOAD SERVICES =====
+        function loadServices() {
+            const body = document.getElementById('services-body');
+            body.innerHTML = servicesDatabase.map((service, index) => `
+                <tr>
+                    <td><strong>${service.name}</strong></td>
+                    <td>${service.description}</td>
+                    <td><span style="color: var(--accent-color); font-weight: 700;">GH₵${service.price.toFixed(2)}</span></td>
+                    <td>${service.duration} min</td>
+                    <td>${service.category}</td>
+                    <td>
+                        <button onclick="deleteService(${index})" class="btn btn-danger" style="font-size: 0.85rem;"><i class="fas fa-trash"></i> Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ===== ADD SERVICE =====
+        function handleAddService(event) {
+            event.preventDefault();
+            const name = document.getElementById('service-name').value;
+            const description = document.getElementById('service-description').value;
+            const price = parseFloat(document.getElementById('service-price').value);
+            const duration = parseInt(document.getElementById('service-duration').value);
+            const category = document.getElementById('service-category').value;
+            const icon = document.getElementById('service-icon').value;
+
+            const newService = {
+                id: Date.now(),
+                name,
+                description,
+                price,
+                duration,
+                category,
+                icon,
+                available: true
+            };
+
+            servicesDatabase.push(newService);
+            saveServices();
+            event.target.reset();
+            loadServices();
+            loadDashboard();
+            showAlert('services', `✅ Service "${name}" added successfully!`, 'success');
+        }
+
+        // ===== DELETE SERVICE =====
+        function deleteService(index) {
+            const serviceName = servicesDatabase[index].name;
+            if (confirm(`Delete "${serviceName}" from services?`)) {
+                servicesDatabase.splice(index, 1);
+                saveServices();
+                loadServices();
+                loadDashboard();
+                showAlert('services', `✅ Service deleted!`, 'success');
+            }
+        }
+
+        // ===== LOAD HAIR STYLES =====
+        function loadHairStyles() {
+            const body = document.getElementById('hair-body');
+            body.innerHTML = hairGalleryDatabase.map((style, index) => `
+                <tr>
+                    <td><strong>${style.name}</strong></td>
+                    <td>${style.length}</td>
+                    <td>${style.category.join(', ')}</td>
+                    <td><span style="color: var(--accent-color); font-weight: 700;">GH₵${style.price.toFixed(2)}</span></td>
+                    <td>${style.difficulty}</td>
+                    <td>
+                        <button onclick="deleteHairStyle(${index})" class="btn btn-danger" style="font-size: 0.85rem;"><i class="fas fa-trash"></i> Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ===== ADD HAIR STYLE =====
+        function handleAddHairStyle(event) {
+            event.preventDefault();
+            const name = document.getElementById('hair-name').value;
+            const length = document.getElementById('hair-length').value;
+            const categories = document.getElementById('hair-categories').value.split(',').map(c => c.trim());
+            const features = document.getElementById('hair-features').value.split(',').map(f => f.trim());
+            const description = document.getElementById('hair-description').value;
+            const price = parseFloat(document.getElementById('hair-price').value);
+            const icon = document.getElementById('hair-icon').value;
+            const difficulty = document.getElementById('hair-difficulty').value;
+            const maintenance = document.getElementById('hair-maintenance').value;
+
+            const newStyle = {
+                id: Date.now(),
+                name,
+                length,
+                category: categories,
+                features,
+                description,
+                price,
+                icon,
+                difficulty,
+                maintenance
+            };
+
+            hairGalleryDatabase.push(newStyle);
+            saveHairGallery();
+            event.target.reset();
+            loadHairStyles();
+            loadDashboard();
+            showAlert('hair', `✅ Hair style "${name}" added successfully!`, 'success');
+        }
+
+        // ===== DELETE HAIR STYLE =====
+        function deleteHairStyle(index) {
+            const styleName = hairGalleryDatabase[index].name;
+            if (confirm(`Delete "${styleName}" from gallery?`)) {
+                hairGalleryDatabase.splice(index, 1);
+                saveHairGallery();
+                loadHairStyles();
+                loadDashboard();
+                showAlert('hair', `✅ Hair style deleted!`, 'success');
+            }
+        }
+
+        // ===== LOAD BOOKINGS =====
+        function loadBookings() {
+            filterBookings('all');
+        }
+
+        // ===== FILTER BOOKINGS =====
+        function filterBookings(status) {
+            currentFilter = status;
+            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            const filtered = status === 'all' ? bookings : bookings.filter(b => b.status === status);
+            const body = document.getElementById('bookings-body');
+
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            if (filtered.length === 0) {
+                const statusText = status === 'all' ? 'No bookings' : `No ${status.toLowerCase()} bookings`;
+                body.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-light);">${statusText}</td></tr>`;
+                return;
+            }
+
+            body.innerHTML = filtered.map(booking => `
+                <tr>
+                    <td><strong>${booking.clientName}</strong></td>
+                    <td>${booking.clientPhone}</td>
+                    <td>${booking.services.map(s => s.name).join(', ')}</td>
+                    <td>${formatLocalDate(booking.appointmentDate)} at ${booking.appointmentTime}</td>
+                    <td>${booking.serviceType === 'at-salon' ? '🏪 Salon' : '🏠 Home'}</td>
+                    <td>${booking.location.city}, ${booking.location.state}</td>
+                    <td><span class="status-badge status-${booking.status.toLowerCase()}">${booking.status}</span></td>
+<td><strong>GH₵${booking.totalPrice.toFixed(2)}</strong></td>
+                    <td>
+                        <button onclick="viewBooking(${booking.id})" class="btn btn-info"><i class="fas fa-eye"></i> View</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ===== VIEW BOOKING =====
+        function viewBooking(bookingId) {
+            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            currentBooking = bookings.find(b => b.id == bookingId);
+
+            if (currentBooking) {
+                const modalContent = document.getElementById('modal-content');
+                const servicesHTML = currentBooking.services.map(s => 
+                    `<div class="detail-row">
+                        <span>${s.name}</span>
+                        <span>GH₵${s.price.toFixed(2)} (${s.duration} min)</span>
+                    </div>`
+                ).join('');
+
+                modalContent.innerHTML = `
+                    <div class="details-card">
+                        <h4>Client Information</h4>
+                        <div class="detail-row">
+                            <span class="detail-label">Name:</span>
+                            <span class="detail-value">${currentBooking.clientName}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Email:</span>
+                            <span class="detail-value">${currentBooking.clientEmail}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Phone:</span>
+                            <span class="detail-value">${currentBooking.clientPhone}</span>
+                        </div>
+                    </div>
+
+                    <div class="details-card">
+                        <h4>Booking Information</h4>
+                        <div class="detail-row">
+                            <span class="detail-label">Service Type:</span>
+                            <span class="detail-value">${currentBooking.serviceType === 'at-salon' ? '🏪 At Our Salon' : '🏠 Home Service'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Services:</span>
+                        </div>
+                        ${servicesHTML}
+                        <div class="detail-row" style="margin-top: 1rem; font-weight: 700; border-top: 2px solid #ddd; paddingrem;">
+                            -top: 1<span class="detail-label">Total Price:</span>
+                            <span class="detail-value" style="color: var(--accent-color);">GH₵${currentBooking.totalPrice.toFixed(2)}</span>
+                        </div>
+                    </div>
+
+                    <div class="details-card">
+                        <h4>Appointment Schedule</h4>
+                        <div class="detail-row">
+                            <span class="detail-label">Date:</span>
+                            <span class="detail-value">${formatLocalDate(currentBooking.appointmentDate)}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Time:</span>
+                            <span class="detail-value">${currentBooking.appointmentTime}</span>
+                        </div>
+                    </div>
+
+                    <div class="details-card">
+                        <h4>Location Details</h4>
+                        <div class="detail-row">
+                            <span class="detail-label">Address:</span>
+                            <span class="detail-value">${currentBooking.location.address}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">City:</span>
+                            <span class="detail-value">${currentBooking.location.city}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">State:</span>
+                            <span class="detail-value">${currentBooking.location.state}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Zip Code:</span>
+                            <span class="detail-value">${currentBooking.location.zipcode}</span>
+                        </div>
+                    </div>
+
+                    <div class="details-card">
+                        <h4>Booking Status</h4>
+                        <span class="status-badge status-${currentBooking.status.toLowerCase()}">${currentBooking.status}</span>
+                    </div>
+                `;
+
+                document.getElementById('bookingModal').style.display = 'block';
+            }
+        }
+
+        // ===== APPROVE BOOKING =====
+        function approveBooking() {
+            if (!currentBooking) return;
+
+            let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            const index = bookings.findIndex(b => b.id == currentBooking.id);
+            if (index !== -1) {
+                bookings[index].status = 'Approved';
+                bookings[index].approvedAt = new Date().toISOString();
+                localStorage.setItem('bookings', JSON.stringify(bookings));
+                showAlert('bookings', '✅ Booking approved successfully!', 'success');
+                closeModal();
+                filterBookings(currentFilter);
+                loadDashboard();
+            }
+        }
+
+        // ===== DECLINE BOOKING =====
+        function declineBooking() {
+            if (!currentBooking) return;
+
+            let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            const index = bookings.findIndex(b => b.id == currentBooking.id);
+            if (index !== -1) {
+                bookings[index].status = 'Declined';
+                bookings[index].declinedAt = new Date().toISOString();
+                localStorage.setItem('bookings', JSON.stringify(bookings));
+                showAlert('bookings', '✅ Booking declined!', 'success');
+                closeModal();
+                filterBookings(currentFilter);
+                loadDashboard();
+            }
+        }
+
+        // ===== CLOSE MODAL =====
+        function closeModal() {
+            document.getElementById('bookingModal').style.display = 'none';
+            currentBooking = null;
+        }
+
+        // ===== LOAD INVENTORY =====
+        function loadInventory() {
+            const body = document.getElementById('inventory-body');
+
+            if (inventoryDatabase.length === 0) {
+                body.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-light);">No items in inventory yet</td></tr>';
+                return;
+            }
+
+            body.innerHTML = inventoryDatabase.map((item, index) => {
+                const totalValue = (item.quantity * item.cost).toFixed(2);
+                const status = item.quantity > (item.reorderLevel || 10)
+                    ? '<span class="status-badge" style="background: #d4edda; color: #155724;"><i class="fas fa-check"></i> In Stock</span>'
+                    : '<span class="status-badge" style="background: #fff3cd; color: #856404;"><i class="fas fa-exclamation-triangle"></i> Low Stock</span>';
+                
+                return `
+                    <tr>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.category}</td>
+                        <td><strong>${item.quantity}</strong></td>
+<td><strong style="color: var(--accent-color);">GH₵${item.cost.toFixed(2)}</strong></td>
+                        <td><strong style="color: var(--accent-color);">GH₵${totalValue}</strong></td>
+                        <td>${status}</td>
+                        <td>
+                            <button onclick="editInventory(${index})" class="btn btn-info" style="font-size: 0.85rem;"><i class="fas fa-edit"></i> Edit</button>
+                            <button onclick="deleteInventory(${index})" class="btn btn-danger" style="font-size: 0.85rem;"><i class="fas fa-trash"></i> Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ===== ADD INVENTORY =====
+        function handleAddInventory(event) {
+            event.preventDefault();
+            const name = document.getElementById('inv-name').value;
+            const quantity = parseInt(document.getElementById('inv-quantity').value);
+            const category = document.getElementById('inv-category').value;
+            const cost = parseFloat(document.getElementById('inv-cost').value);
+
+            const newItem = {
+                id: Date.now(),
+                name,
+                quantity,
+                category,
+                cost,
+                reorderLevel: Math.ceil(quantity * 0.2),
+                lastRestocked: new Date().toISOString()
+            };
+
+            let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+            inventory.push(newItem);
+            localStorage.setItem('inventory', JSON.stringify(inventory));
+
+            event.target.reset();
+            loadInventory();
+            showAlert('inventory', `✅ ${name} added to inventory!`, 'success');
+        }
+
+        // ===== EDIT INVENTORY =====
+        function editInventory(index) {
+            const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+            const item = inventory[index];
+            const newQuantity = prompt(`Update quantity for "${item.name}"\n\nCurrent: ${item.quantity}`, item.quantity);
+
+            if (newQuantity !== null && newQuantity > 0) {
+                inventory[index].quantity = parseInt(newQuantity);
+                localStorage.setItem('inventory', JSON.stringify(inventory));
+                loadInventory();
+                showAlert('inventory', '✅ Quantity updated!', 'success');
+            }
+        }
+
+        // ===== DELETE INVENTORY =====
+        function deleteInventory(index) {
+            const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+            const itemName = inventory[index].name;
+            
+            if (confirm(`Delete "${itemName}" from inventory?`)) {
+                inventory.splice(index, 1);
+                localStorage.setItem('inventory', JSON.stringify(inventory));
+                loadInventory();
+                showAlert('inventory', `✅ ${itemName} deleted!`, 'success');
+            }
+        }
+
+        // ===== SHOW ALERT =====
+        function showAlert(pageId, message, type) {
+            const alert = document.getElementById(`${pageId}-alert`);
+            if (alert) {
+                alert.textContent = message;
+                alert.className = `alert show alert-${type}`;
+                
+                setTimeout(() => {
+                    alert.classList.remove('show');
+                }, 4000);
+            }
+        }
+
+        // ===== HANDLE LOGOUT =====
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // ===== CLOSE MODAL ON OUTSIDE CLICK =====
+        window.onclick = function(event) {
+            const bookingModal = document.getElementById('bookingModal');
+            if (event.target == bookingModal) {
+                bookingModal.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+</html>

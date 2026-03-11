@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - RoyalTouch Beauty Salon</title>
+    <meta name="description" content="Contact RoyalTouch Beauty Salon — book appointments, ask questions, or get directions.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <i class="fas fa-crown"></i> RoyalTouch
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="index.html#services">Services</a>
+            <a href="index.html#about">About</a>
+            <a href="contact.html" class="active">Contact</a>
+            <a href="login.html" class="btn-login">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="contact-hero">
+            <div class="container">
+                <h1>Get in Touch</h1>
+                <p>Questions, appointments, or product enquiries — we're here to help.</p>
+            </div>
+        </section>
+
+        <section class="contact-area container" aria-labelledby="contact-area-title">
+            <div class="contact-page-grid">
+                <!-- Contact card -->
+                <aside class="contact-card" aria-labelledby="contact-card-title">
+                    <h2 id="contact-card-title"><i class="fas fa-address-book"></i> Contact Information</h2>
+                    <ul class="info-list">
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <strong>Address:</strong><br>
+                                KTU junction 5, Koforidua
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <strong>Phone:</strong><br>
+                                <a href="tel:+233240784627" style="color: var(--primary-color);">+233 240784627</a>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <strong>Email:</strong><br>
+                                <a href="mailto:admin@royaltouch.com" style="color: var(--primary-color);">admin@royaltouch.com</a>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <strong>Hours:</strong>
+                                <ul class="hours-list">
+                                    <li>Mon–Wed: 9:00 AM – 6:00 PM</li>
+                                    <li>Thu–Fri: 9:00 AM – 8:00 PM</li>
+                                    <li>Sat: 10:00 AM – 6:00 PM</li>
+                                    <li>Sun: 12:00 PM – 5:00 PM</li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="map-wrap" aria-hidden="false">
+                        <iframe
+                            title="RoyalTouch Beauty Salon location"
+                            src="https://www.google.com/maps?q=KTU+junction+5,+Koforidua&output=embed"
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </aside>
+
+                <!-- Contact form -->
+                <section class="form-wrap" aria-labelledby="contact-form-title">
+                    <h2 id="contact-form-title"><i class="fas fa-paper-plane"></i> Send a Message</h2>
+
+                    <form id="contactForm" novalidate>
+                        <div class="form-row">
+                            <label for="name"><i class="fas fa-user"></i> Full Name</label>
+                            <input type="text" id="name" name="name" placeholder="Your full name" required minlength="2">
+                            <span class="error-message" id="err-name" aria-live="polite"></span>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                            <span class="error-message" id="err-email" aria-live="polite"></span>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="phone"><i class="fas fa-phone"></i> Phone (optional)</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+233 XXX XXX XXX">
+                            <span class="error-message" id="err-phone" aria-live="polite"></span>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="subject"><i class="fas fa-tag"></i> Subject</label>
+                            <input type="text" id="subject" name="subject" placeholder="Appointment / Inquiry / Feedback" required>
+                            <span class="error-message" id="err-subject" aria-live="polite"></span>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="message"><i class="fas fa-comment"></i> Message</label>
+                            <textarea id="message" name="message" rows="5" placeholder="Tell us how we can help..." required minlength="10"></textarea>
+                            <span class="error-message" id="err-message" aria-live="polite"></span>
+                        </div>
+
+                        <div class="form-row">
+                            <label class="checkbox-label">
+                                <input id="consent" name="consent" type="checkbox" required>
+                                I consent to Royal Beauty Touch Salon contacting me about this enquiry.
+                            </label>
+                            <span class="error-message" id="err-consent" aria-live="polite"></span>
+                        </div>
+
+                        <div class="form-row">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                            <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; <span id="year"></span> RoyalTouch Beauty Salon. All rights reserved.</p>
+            <p class="footer-contact">
+                <span><i class="fas fa-phone"></i> +233 240 784 627</span>
+                <span class="separator">|</span>
+                <span><i class="fas fa-envelope"></i> info@royaltouch.com</span>
+                <span class="separator">|</span>
+                <span><i class="fas fa-map-marker-alt"></i> Koforidua junction 5</span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        const FORM_ENDPOINT = "";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("contactForm");
+            const statusEl = document.getElementById("formStatus");
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            // Set current year in footer
+            const yearEl = document.getElementById("year");
+            if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+            // Validators
+            const validators = {
+                name: v => v && v.trim().length >= 2 || "Please enter your full name.",
+                email: v => /\S+@\S+\.\S+/.test(v) || "Please enter a valid email address.",
+                subject: v => v && v.trim().length > 0 || "Please add a subject.",
+                message: v => v && v.trim().length >= 10 || "Please write a message (at least 10 characters).",
+                consent: v => v === true || "Please provide consent to contact you."
+            };
+
+            function showError(id, msg) {
+                const el = document.getElementById(`err-${id}`);
+                if (!el) return;
+                el.textContent = msg || "";
+            }
+
+            function validateForm(data) {
+                let ok = true;
+                const nameRes = validators.name(data.get("name"));
+                if (nameRes !== true) { showError("name", nameRes); ok = false; } else showError("name", "");
+
+                const emailRes = validators.email(data.get("email"));
+                if (emailRes !== true) { showError("email", emailRes); ok = false; } else showError("email", "");
+
+                const subjectRes = validators.subject(data.get("subject"));
+                if (subjectRes !== true) { showError("subject", subjectRes); ok = false; } else showError("subject", "");
+
+                const messageRes = validators.message(data.get("message"));
+                if (messageRes !== true) { showError("message", messageRes); ok = false; } else showError("message", "");
+
+                const consentEl = document.getElementById("consent");
+                const consentRes = validators.consent(consentEl ? consentEl.checked : false);
+                if (consentRes !== true) { showError("consent", consentRes); ok = false; } else showError("consent", "");
+
+                return ok;
+            }
+
+            function mailtoFallback(formDataObj) {
+                const to = "admin@royaltouch.com";
+                const subject = encodeURIComponent(formDataObj.subject || "Contact from website");
+                let body = `Name: ${formDataObj.name || ""}\nEmail: ${formDataObj.email || ""}\nPhone: ${formDataObj.phone || ""}\n\nMessage:\n${formDataObj.message || ""}`;
+                body = encodeURIComponent(body);
+                window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+            }
+
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                statusEl.textContent = "";
+                const formData = new FormData(form);
+
+                if (!validateForm(formData)) {
+                    statusEl.className = "form-status error";
+                    statusEl.textContent = "Please correct the errors above.";
+                    return;
+                }
+
+                const obj = {
+                    name: formData.get("name"),
+                    email: formData.get("email"),
+                    phone: formData.get("phone"),
+                    subject: formData.get("subject"),
+                    message: formData.get("message"),
+                    consent: document.getElementById("consent").checked,
+                    submittedAt: new Date().toISOString()
+                };
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+                try {
+                    if (FORM_ENDPOINT && FORM_ENDPOINT.length > 0) {
+                        await fetch(FORM_ENDPOINT, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                            body: JSON.stringify(obj)
+                        });
+                        statusEl.className = "form-status success";
+                        statusEl.textContent = "Thanks! Your message has been sent. We'll be in touch shortly.";
+                        form.reset();
+                    } else {
+                        mailtoFallback(obj);
+                        statusEl.className = "form-status success";
+                        statusEl.textContent = "Thanks! Your message has been sent. We'll be in touch shortly.";
+                        form.reset();
+                    }
+                } catch (err) {
+                    console.error("Form submit error:", err);
+                    statusEl.className = "form-status error";
+                    statusEl.textContent = "Sorry — there was a problem sending your message. Try again or call us directly.";
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hair Gallery - RoyalTouch Beauty Salon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <i class="fas fa-crown"></i> RoyalTouch
+        </div>
+        <nav>
+            <a href="clientDashboard.html">
+                <i class="fas fa-spa"></i> Services
+            </a>
+            <a href="clientDashboard.html">
+                <i class="fas fa-calendar"></i> Appointments
+            </a>
+            <a href="hairGallery.html" class="active">
+                <i class="fas fa-image"></i> Hair Gallery
+            </a>
+            <a href="clientDashboard.html">
+                <i class="fas fa-user"></i> Profile
+            </a>
+        </nav>
+        <div class="user-section">
+            <div class="avatar" id="avatar">U</div>
+            <button class="logout-btn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <div class="gallery-hero">
+        <div class="container">
+            <h1><i class="fas fa-scissors"></i> Hair Gallery</h1>
+            <p>Explore our stunning collection of hair styles. Click on any style to request it!</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="filter-section">
+            <button class="filter-btn active" onclick="filterGallery('all')">All Styles</button>
+            <button class="filter-btn" onclick="filterGallery('short')">Short Hair</button>
+            <button class="filter-btn" onclick="filterGallery('medium')">Medium Hair</button>
+            <button class="filter-btn" onclick="filterGallery('long')">Long Hair</button>
+            <button class="filter-btn" onclick="filterGallery('curly')">Curly Hair</button>
+            <button class="filter-btn" onclick="filterGallery('straight')">Straight Hair</button>
+        </div>
+
+        <div class="gallery-grid" id="gallery-grid">
+            <!-- Hair styles will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Request Modal -->
+    <div id="requestModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Request Hair Style</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form onsubmit="submitRequest(event)">
+                <div class="form-group">
+                    <label>Selected Style:</label>
+                    <input type="text" id="styleName" readonly style="background: var(--light-bg);">
+                </div>
+                <div class="form-group">
+                    <label>Your Name:</label>
+                    <input type="text" id="requestName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="requestEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Preferred Date:</label>
+                    <input type="date" id="requestDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Additional Notes:</label>
+                    <textarea id="requestNotes" rows="4" placeholder="Any special requests or modifications?"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-paper-plane"></i> Submit Request
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 RoyalTouch Beauty Salon. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Hair Gallery Dataset
+        const hairGallery = [
+            {
+                id: 1,
+                name: 'Classic Bob',
+                length: 'Short',
+                category: ['short', 'straight'],
+                features: ['Professional', 'Timeless', 'Easy Maintenance'],
+                description: 'A chic and classic short hairstyle that frames the face beautifully. Perfect for the modern professional.',
+                price: 45,
+                icon: '✂️'
+            },
+            {
+                id: 2,
+                name: 'Pixie Cut',
+                length: 'Short',
+                category: ['short'],
+                features: ['Bold', 'Trendy', 'Low Maintenance'],
+                description: 'A bold and daring short cut that showcases your features. Perfect for confident individuals.',
+                price: 40,
+                icon: '✨'
+            },
+            {
+                id: 3,
+                name: 'Textured Waves',
+                length: 'Medium',
+                category: ['medium', 'curly'],
+                features: ['Voluminous', 'Textured', 'Bohemian'],
+                description: 'Soft, flowing waves that add texture and movement. Great for any face shape.',
+                price: 55,
+                icon: '🌊'
+            },
+            {
+                id: 4,
+                name: 'Sleek Lob',
+                length: 'Medium',
+                category: ['medium', 'straight'],
+                features: ['Elegant', 'Versatile', 'Modern'],
+                description: 'A modern take on the bob, hitting just below the shoulders. Perfect for a polished look.',
+                price: 50,
+                icon: '💎'
+            },
+            {
+                id: 5,
+                name: 'Beach Waves',
+                length: 'Long',
+                category: ['long', 'curly'],
+                features: ['Romantic', 'Effortless', 'Summer Vibes'],
+                description: 'Loose, romantic waves perfect for a beach-inspired look. Timeless and flattering.',
+                price: 65,
+                icon: '🏖️'
+            },
+            {
+                id: 6,
+                name: 'Silk Straight',
+                length: 'Long',
+                category: ['long', 'straight'],
+                features: ['Sleek', 'Luxurious', 'Shiny'],
+                description: 'Smooth, glossy long hair that flows beautifully. Perfect for an elegant appearance.',
+                price: 70,
+                icon: '✨'
+            },
+            {
+                id: 7,
+                name: 'Curly Crown',
+                length: 'Medium',
+                category: ['medium', 'curly'],
+                features: ['Playful', 'Voluminous', 'Textured'],
+                description: 'Defined curls that create a beautiful crown of texture. Celebrates natural curls.',
+                price: 60,
+                icon: '👑'
+            },
+            {
+                id: 8,
+                name: 'Sideswept Bangs',
+                length: 'Short',
+                category: ['short'],
+                features: ['Flattering', 'Chic', 'Face-Framing'],
+                description: 'Short hair with stylish sideswept bangs for a trendy, modern look.',
+                price: 50,
+                icon: '😎'
+            },
+            {
+                id: 9,
+                name: 'Balayage Waves',
+                length: 'Long',
+                category: ['long', 'curly'],
+                features: ['Dimensional', 'Highlight', 'Sun-Kissed'],
+                description: 'Long flowing waves with beautiful balayage highlights. Perfect for a sun-kissed glow.',
+                price: 80,
+                icon: '☀️'
+            },
+            {
+                id: 10,
+                name: 'Shag Cut',
+                length: 'Medium',
+                category: ['medium'],
+                features: ['Edgy', 'Layered', 'Rock & Roll'],
+                description: 'A layered, textured cut that adds movement and edge. Great for a rock & roll vibe.',
+                price: 55,
+                icon: '🎸'
+            },
+            {
+                id: 11,
+                name: 'Space Buns',
+                length: 'Short',
+                category: ['short'],
+                features: ['Fun', 'Playful', 'Trendy'],
+                description: 'Cute and fun double buns style. Perfect for a bold, playful statement.',
+                price: 35,
+                icon: '🎀'
+            },
+            {
+                id: 12,
+                name: 'Mermaid Waves',
+                length: 'Long',
+                category: ['long', 'curly'],
+                features: ['Glamorous', 'Voluminous', 'Magical'],
+                description: 'Long, voluminous waves that cascade beautifully. Perfect for a glamorous look.',
+                price: 75,
+                icon: '🧜‍♀️'
+            }
+        ];
+
+        let currentFilter = 'all';
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        window.addEventListener('load', () => {
+            document.getElementById('avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            loadGallery();
+        });
+
+        function loadGallery() {
+            const gallery = document.getElementById('gallery-grid');
+            gallery.innerHTML = '';
+
+            const filtered = currentFilter === 'all' 
+                ? hairGallery 
+                : hairGallery.filter(hair => hair.category.includes(currentFilter));
+
+            if (filtered.length === 0) {
+                gallery.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <i class="fas fa-search"></i>
+                        <h3>No styles found</h3>
+                        <p>Try a different filter to see more styles.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            gallery.innerHTML = filtered.map(hair => `
+                <div class="hair-card" onclick="openRequestModal('${hair.name}')">
+                    <div class="hair-image">${hair.icon}</div>
+                    <div class="hair-info">
+                        <h3>${hair.name}</h3>
+                        <span class="hair-length">${hair.length} Hair</span>
+                        <p class="hair-description">${hair.description}</p>
+                        <div class="hair-features">
+                            ${hair.features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
+                        </div>
+                        <div class="hair-price">GH₵${hair.price}</div>
+                        <button class="request-btn" onclick="openRequestModal('${hair.name}'); event.stopPropagation();">
+                            Request This Style
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterGallery(filter) {
+            currentFilter = filter;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            loadGallery();
+        }
+
+        function openRequestModal(styleName) {
+            document.getElementById('styleName').value = styleName;
+            document.getElementById('requestName').value = currentUser.name;
+            document.getElementById('requestEmail').value = currentUser.email;
+            document.getElementById('requestModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('requestModal').style.display = 'none';
+        }
+
+        function submitRequest(event) {
+            event.preventDefault();
+            const styleName = document.getElementById('styleName').value;
+            const requestDate = document.getElementById('requestDate').value;
+            const requestNotes = document.getElementById('requestNotes').value;
+
+            let requests = JSON.parse(localStorage.getItem('hairRequests')) || [];
+            requests.push({
+                id: Date.now(),
+                styleName,
+                clientName: currentUser.name,
+                clientEmail: currentUser.email,
+                requestDate,
+                requestNotes,
+                status: 'Pending',
+                createdAt: new Date().toISOString()
+            });
+
+            localStorage.setItem('hairRequests', JSON.stringify(requests));
+            closeModal();
+            alert('Hair style request submitted successfully!');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('requestModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

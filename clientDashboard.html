@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard - RoyalTouch Beauty Salon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <i class="fas fa-crown"></i> RoyalTouch
+        </div>
+        <nav>
+            <a href="#" class="nav-link active" onclick="showPage('services'); return false;">
+                <i class="fas fa-spa"></i> Services
+            </a>
+            <a href="#" class="nav-link" onclick="showPage('appointments'); return false;">
+                <i class="fas fa-calendar"></i> Appointments
+            </a>
+            <a href="booking.html" class="nav-link">
+                <i class="fas fa-calendar-check"></i> Book Now
+            </a>
+            <a href="#" class="nav-link" onclick="showPage('profile'); return false;">
+                <i class="fas fa-user"></i> Profile
+            </a>
+        </nav>
+        <div class="user-section">
+            <div class="avatar" id="avatar">U</div>
+            <button class="logout-btn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Services Page -->
+        <section id="services" class="page-section active">
+            <h2 class="dashboard-title"><i class="fas fa-spa"></i> Available Services</h2>
+            <div class="services-grid" id="services-grid"></div>
+        </section>
+
+        <!-- Appointments Page -->
+        <section id="appointments" class="page-section">
+            <h2 class="dashboard-title"><i class="fas fa-calendar"></i> My Appointments</h2>
+            <div class="table-container">
+                <table id="appointments-table">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointments-body">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-light);">
+                                No appointments yet. <a href="booking.html" style="color: var(--accent-color); font-weight: 600;">Book Now</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Profile Page -->
+        <section id="profile" class="page-section">
+            <h2 class="dashboard-title"><i class="fas fa-user-circle"></i> My Profile</h2>
+            <div class="profile-card">
+                <div class="profile-item">
+                    <div class="profile-label">Full Name</div>
+                    <div class="profile-value" id="profile-name">-</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">Email Address</div>
+                    <div class="profile-value" id="profile-email">-</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">Phone Number</div>
+                    <div class="profile-value" id="profile-phone">-</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">Member Since</div>
+                    <div class="profile-value" id="profile-date">-</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">Account Type</div>
+                    <div class="profile-value" id="profile-type">Client</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 RoyalTouch Beauty Salon. All rights reserved.</p>
+    </footer>
+
+    <script src="data.js"></script>
+    <script>
+        // Clear servicesDatabase from localStorage to use default with manicure image
+        localStorage.removeItem('servicesDatabase');
+    </script>
+    <script>
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        window.addEventListener('load', () => {
+            initializePage();
+        });
+
+        function initializePage() {
+            // Set avatar
+            document.getElementById('avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            
+            // Load profile
+            document.getElementById('profile-name').textContent = currentUser.name;
+            document.getElementById('profile-email').textContent = currentUser.email;
+            document.getElementById('profile-phone').textContent = currentUser.phone || 'Not provided';
+            document.getElementById('profile-date').textContent = new Date(currentUser.createdAt).toLocaleDateString();
+            document.getElementById('profile-type').textContent = currentUser.userType === 'admin' ? 'Admin' : 'Client';
+            
+            // Load services and appointments
+            loadServices();
+            loadAppointments();
+        }
+
+        function showPage(pageId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(pageId).classList.add('active');
+
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.closest('.nav-link').classList.add('active');
+        }
+
+        function loadServices() {
+            const grid = document.getElementById('services-grid');
+            grid.innerHTML = servicesDatabase.map(service => `
+                <div class="service-card">
+                    <div class="service-icon">
+                        ${((['Manicure','Pedicure','Massage Therapy','Facial Treatment','Hair Coloring','Hair Styling'].includes(service.name)) && service.image) ? `<img src="${service.image}" alt="${service.name}" class="service-img">` : `<i class="fas ${service.icon || 'fa-spa'}"></i>`}
+                    </div>
+                    <div class="service-info">
+                        <h3>${service.name}</h3>
+                        <p>${service.description}</p>
+                        <div class="service-price">GH₵${service.price.toFixed(2)}</div>
+                        <a href="booking.html" class="btn btn-primary" style="width: 100%; text-align: center;">
+                            <i class="fas fa-calendar-plus"></i> Book Now
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Helper function to format date in local timezone
+        function formatLocalDate(dateString) {
+            if (!dateString) return 'N/A';
+            const parts = dateString.split('-');
+            if (parts.length !== 3) return 'N/A';
+            const localDate = new Date(parts[0], parts[1] - 1, parts[2]);
+            return localDate.toLocaleDateString();
+        }
+
+        function loadAppointments() {
+            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            const userBookings = bookings.filter(b => b.clientEmail === currentUser.email);
+            const tbody = document.getElementById('appointments-body');
+
+            if (userBookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-light);">No appointments yet. <a href="booking.html" style="color: var(--accent-color); font-weight: 600;">Book Now</a></td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = userBookings.map(booking => `
+                <tr>
+                    <td>${booking.services.map(s => s.name).join(', ')}</td>
+                    <td>${formatLocalDate(booking.appointmentDate)}</td>
+                    <td>${booking.appointmentTime}</td>
+                    <td><span class="status-badge status-${booking.status.toLowerCase()}">${booking.status}</span></td>
+                    <td>GH₵${booking.totalPrice.toFixed(2)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

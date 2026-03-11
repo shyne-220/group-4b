@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Service - RoyalTouch Beauty Salon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <i class="fas fa-crown"></i> RoyalTouch
+        </div>
+        <nav>
+            <a href="clientDashboard.html">
+                <i class="fas fa-spa"></i> Services
+            </a>
+            <a href="booking.html" class="active">
+                <i class="fas fa-calendar-check"></i> Book Now
+            </a>
+            <a href="clientDashboard.html">
+                <i class="fas fa-user"></i> Profile
+            </a>
+        </nav>
+        <div class="user-section">
+            <div class="avatar" id="avatar">U</div>
+            <button class="logout-btn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 style="text-align: center; color: var(--primary-color); margin-bottom: 1rem;">
+            <i class="fas fa-calendar-plus"></i> Book Your Service
+        </h1>
+        <p style="text-align: center; color: var(--text-light); margin-bottom: 3rem;">
+            Schedule an appointment at your convenience
+        </p>
+
+        <div id="alert" class="alert"></div>
+
+        <div class="booking-form-container">
+            <form id="bookingForm" onsubmit="submitBooking(event)">
+
+                <div class="form-section">
+                    <h2><i class="fas fa-map-marker-alt"></i> Where Would You Like the Service?</h2>
+                    <div class="service-type-options">
+                        <div class="service-option active" onclick="selectServiceType('at-salon')">
+                            <i class="fas fa-store"></i>
+                            <p>At Salon</p>
+                        </div>
+                        <div class="service-option" onclick="selectServiceType('home-service')">
+                            <i class="fas fa-home"></i>
+                            <p>Home Service</p>
+                        </div>
+                    </div>
+                    <input type="hidden" id="serviceType" name="serviceType" value="at-salon">
+                </div>
+
+                <div class="form-section">
+                    <h2><i class="fas fa-map-pin"></i> Location Details</h2>
+                    <div class="location-inputs">
+                        <div class="form-group">
+                            <label>Street Address</label>
+                            <input type="text" id="address" required>
+                        </div>
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" id="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label>State/Province</label>
+                            <input type="text" id="state" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2><i class="fas fa-spa"></i> Select Services</h2>
+                    <div class="services-checklist" id="servicesCheckList"></div>
+                </div>
+
+                <div class="form-section">
+                    <h2><i class="fas fa-clock"></i> Schedule</h2>
+                    <div class="datetime-grid">
+                        <div class="form-group">
+                            <label>Preferred Date</label>
+                            <input type="date" id="appointmentDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Time</label>
+                            <input type="time" id="appointmentTime" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2><i class="fas fa-user-circle"></i> Contact Information</h2>
+                    <div class="datetime-grid">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="contactName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="contactPhone" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-summary">
+                    <h3>Booking Summary</h3>
+                    <div class="summary-item">
+                        <span>Service Type:</span>
+                        <strong id="summaryServiceType">At Salon</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Selected Services:</span>
+                        <strong id="summaryServices">0 services</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Date & Time:</span>
+                        <strong id="summaryDateTime">Not selected</strong>
+                    </div>
+                    <div class="total-price">GH₵<span id="total-price">0.00</span></div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                        <i class="fas fa-arrow-left"></i> Go Back
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check-circle"></i> Confirm Booking
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 RoyalTouch Beauty Salon. All rights reserved.</p>
+    </footer>
+
+    <script src="data.js"></script>
+    <script>
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        let selectedServices = [];
+
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        window.addEventListener('load', () => {
+            initializePage();
+        });
+
+        function initializePage() {
+            document.getElementById('avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            document.getElementById('contactName').value = currentUser.name;
+            document.getElementById('contactPhone').value = currentUser.phone || '';
+            
+            // Set minimum date to today in local timezone
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            document.getElementById('appointmentDate').min = `${year}-${month}-${day}`;
+            
+            loadServices();
+        }
+
+        function loadServices() {
+            const container = document.getElementById('servicesCheckList');
+            container.innerHTML = servicesDatabase.map(service => `
+                <div class="service-checkbox">
+                    <input type="checkbox" id="service-${service.id}" value="${service.id}" onchange="updateSummary()">
+                    <div style="flex:1;">
+                        <label for="service-${service.id}">${service.name}</label>
+                        <small style="color:var(--text-light)">${service.description}</small>
+                        <span class="service-price">GH₵${service.price}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectServiceType(type) {
+            document.getElementById('serviceType').value = type;
+            document.querySelectorAll('.service-option').forEach(opt => opt.classList.remove('active'));
+            event.target.closest('.service-option').classList.add('active');
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const checkboxes = document.querySelectorAll('#servicesCheckList input[type="checkbox"]:checked');
+            selectedServices = Array.from(checkboxes).map(cb => {
+                return servicesDatabase.find(s => s.id == cb.value);
+            }).filter(s => s);
+
+            const serviceType = document.getElementById('serviceType').value;
+            document.getElementById('summaryServiceType').textContent = serviceType === 'at-salon' ? 'At Salon' : 'Home Service';
+
+            const servicesText = selectedServices.length > 0 
+                ? `${selectedServices.length} service(s): ${selectedServices.map(s => s.name).join(', ')}`
+                : '0 services';
+            document.getElementById('summaryServices').textContent = servicesText;
+
+            // Fix date display using local timezone
+            const dateInput = document.getElementById('appointmentDate').value;
+            const time = document.getElementById('appointmentTime').value;
+            
+            let dateText = 'Not selected';
+            if (dateInput) {
+                const parts = dateInput.split('-');
+                const localDate = new Date(parts[0], parts[1] - 1, parts[2]);
+                dateText = localDate.toLocaleDateString();
+            }
+            
+            const dateTimeText = dateInput && time ? `${dateText} at ${time}` : 'Not selected';
+            document.getElementById('summaryDateTime').textContent = dateTimeText;
+
+            const totalPrice = selectedServices.reduce((sum, s) => sum + s.price, 0);
+            document.getElementById('total-price').textContent = totalPrice.toFixed(2);
+        }
+
+        function submitBooking(event) {
+            event.preventDefault();
+
+            if (selectedServices.length === 0) {
+                showAlert('Please select at least one service', 'danger');
+                return;
+            }
+
+            // Get date in local timezone format for storage
+            const dateInput = document.getElementById('appointmentDate').value;
+            const timeInput = document.getElementById('appointmentTime').value;
+
+            const bookingData = {
+                id: Date.now(),
+                clientId: currentUser.id,
+                clientName: currentUser.name,
+                clientEmail: currentUser.email,
+                clientPhone: document.getElementById('contactPhone').value,
+                serviceType: document.getElementById('serviceType').value,
+                location: {
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value
+                },
+                services: selectedServices.map(s => ({ id: s.id, name: s.name, price: s.price })),
+                appointmentDate: dateInput,
+                appointmentTime: timeInput,
+                totalPrice: selectedServices.reduce((sum, s) => sum + s.price, 0),
+                status: 'Pending',
+                createdAt: new Date().toISOString()
+            };
+
+            let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            bookings.push(bookingData);
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+
+            showAlert('Booking submitted successfully! Admin will review and confirm.', 'success');
+            
+            setTimeout(() => {
+                window.location.href = 'clientDashboard.html';
+            }, 2000);
+        }
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert show alert-${type}`;
+            
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('appointmentDate').addEventListener('change', updateSummary);
+        document.getElementById('appointmentTime').addEventListener('change', updateSummary);
+    </script>
+</body>
+</html>
